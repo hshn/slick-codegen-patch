@@ -10,8 +10,6 @@ case class SlickTestKit[P <: JdbcProfile](
   profile: P,
   db: P#Backend#Database,
 ) {
-  import profile.api._
-
   def createModel(ignoreInvalidDefaults: Boolean = true): IO[Model] = {
     fromFuture { implicit ec =>
       db.run(profile.createModel(None, ignoreInvalidDefaults = ignoreInvalidDefaults))
