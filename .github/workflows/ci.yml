@@ -40,6 +40,10 @@ jobs:
           java-version: 17
           cache: sbt
 
+      - uses: isbang/compose-action@v1.5.1
+        with:
+          compose-file: ./docker-compose.yml
+
       - name: Check that workflows are up to date
         run: sbt '++ ${{ matrix.scala }}' githubWorkflowCheck
 
@@ -78,6 +82,10 @@ jobs:
           distribution: temurin
           java-version: 17
           cache: sbt
+
+      - uses: isbang/compose-action@v1.5.1
+        with:
+          compose-file: ./docker-compose.yml
 
       - name: Download target directories (2.12.18)
         uses: actions/download-artifact@v3
