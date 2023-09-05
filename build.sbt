@@ -11,6 +11,12 @@ ThisBuild / developers         := List(Developer("hshn", "Shota Hoshino", "sht.h
 ThisBuild / scalaVersion       := scala213
 ThisBuild / crossScalaVersions := Seq(scala212, scala213)
 
+lazy val root = (project in file("."))
+  .settings(
+    publish / skip := true,
+  )
+  .aggregate(slickCodegenPatch)
+
 lazy val slickCodegenPatch = (project in file("slick-codegen-patch") withId "slick-codegen-patch")
   .settings(settings)
   .settings(
