@@ -5,8 +5,9 @@ lazy val scala213 = "2.13.11"
 
 ThisBuild / organization       := "dev.hshn"
 ThisBuild / homepage           := Some(url("https://github.com/hshn/slick-codegen-patch"))
-ThisBuild / licenses           := Seq("MIT License" -> url("https://opensource.org/licenses/MIT"))
+ThisBuild / licenses           := Seq(License.MIT)
 ThisBuild / versionScheme      := Some("early-semver")
+ThisBuild / developers         := List(Developer("hshn", "Shota Hoshino", "sht.hshn@gmail.com", url("https://github.com/hshn")))
 ThisBuild / scalaVersion       := scala213
 ThisBuild / crossScalaVersions := Seq(scala212, scala213)
 
