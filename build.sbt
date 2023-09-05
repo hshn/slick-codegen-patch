@@ -4,7 +4,9 @@ lazy val scala212 = "2.12.18"
 lazy val scala213 = "2.13.11"
 
 ThisBuild / organization       := "dev.hshn"
-ThisBuild / version            := "0.1.0-SNAPSHOT"
+ThisBuild / homepage           := Some(url("https://github.com/hshn/slick-codegen-patch"))
+ThisBuild / licenses           := Seq("MIT License" -> url("https://opensource.org/licenses/MIT"))
+ThisBuild / versionScheme      := Some("early-semver")
 ThisBuild / scalaVersion       := scala213
 ThisBuild / crossScalaVersions := Seq(scala212, scala213)
 
@@ -21,7 +23,6 @@ lazy val slickCodegenPatch = (project in file("slick-codegen-patch"))
   )
 
 lazy val settings = Seq(
-  versionScheme := Some("early-semver"),
   tpolecatExcludeOptions += ScalacOptions.warnUnusedImports,
   Test / tpolecatExcludeOptions += ScalacOptions.warnNonUnitStatement,
 )
@@ -29,15 +30,15 @@ lazy val settings = Seq(
 // github workflows
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("17"))
 ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
-ThisBuild / githubWorkflowPublishTargetBranches := Seq(RefPredicate.StartsWith(Ref.Tag("v")))
-ThisBuild / githubWorkflowJobSetup ~= { steps =>
-  steps :+ WorkflowStep.Use(
+ThisBuild / githubWorkflowBuild ~= { steps =>
+  WorkflowStep.Use(
     UseRef.Public("isbang", "compose-action", "v1.5.1"),
     Map(
       "compose-file" -> "./docker-compose.yml",
     ),
-  )
+  ) +: steps
 }
+ThisBuild / githubWorkflowPublishTargetBranches := Seq(RefPredicate.StartsWith(Ref.Tag("v")))
 ThisBuild / githubWorkflowPublish := Seq(
   WorkflowStep.Sbt(
     commands = List("ci-release"),
@@ -54,3 +55,7 @@ ThisBuild / githubWorkflowPublishTargetBranches := Seq(
   RefPredicate.StartsWith(Ref.Tag("v")),
   RefPredicate.Equals(Ref.Branch("main")),
 )
+
+// sonatype
+ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org"
+sonatypeRepository                 := "https://s01.oss.sonatype.org/service/local"
