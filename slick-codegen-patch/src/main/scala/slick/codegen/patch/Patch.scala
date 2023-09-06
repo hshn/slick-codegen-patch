@@ -64,27 +64,6 @@ object Patch {
     )
   }
 
-  case object DropDefaultValue extends PatchTable {
-    override def patch(table: Table): Table = table.copy(
-      columns = table.columns.map(dropDefaultValue),
-      indices = table.indices.map { index =>
-        index.copy(columns = index.columns.map(dropDefaultValue))
-      },
-      foreignKeys = table.foreignKeys.map { foreignKey =>
-        foreignKey.copy(
-          referencingColumns = foreignKey.referencingColumns.map(dropDefaultValue),
-          referencedColumns = foreignKey.referencedColumns.map(dropDefaultValue),
-        )
-      },
-    )
-    private def dropDefaultValue(column: Column): Column = column.copy(
-      options = column.options.filter {
-        case RelationalProfile.ColumnOption.Default(_) => false
-        case _                                         => true
-      },
-    )
-  }
-
   case class AndThen(a: Patch, b: Patch) extends Patch {
     override def apply(model: Model): Model = b.apply(a.apply(model))
   }
@@ -103,6 +82,17 @@ object Patch {
       referencedColumns = foreignKey.referencedColumns.map(refine),
     )
     private def refine(index: Index): Index = index.copy(columns = index.columns.map(refine))
+  }
+
+  object PatchColumn {
+    def dropDefaultValue: PatchColumn = PatchColumn { column =>
+      column.copy(
+        options = column.options.filter {
+          case RelationalProfile.ColumnOption.Default(_) => false
+          case _                                         => true
+        },
+      )
+    }
   }
 
   case class FilterTable(f: QualifiedName => Boolean) extends Patch {
