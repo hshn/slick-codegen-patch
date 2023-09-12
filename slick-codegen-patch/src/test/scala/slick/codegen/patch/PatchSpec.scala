@@ -21,29 +21,6 @@ class PatchSpec extends FunctionalSpec {
         }
       }
     }
-    "DropDefaultValue" should {
-      "remove default value from columns" in {
-        testPatch(Patch.DropDefaultValue) { model =>
-          model.tables.exists { table =>
-            table.columns.exists { column =>
-              column.options.exists {
-                case _: RelationalProfile.ColumnOption.Default[_] => true
-                case _                                            => false
-              }
-            }
-          } shouldBe true
-        } { patched =>
-          patched.tables.exists { table =>
-            table.columns.exists { column =>
-              column.options.exists {
-                case _: RelationalProfile.ColumnOption.Default[_] => true
-                case _                                            => false
-              }
-            }
-          } shouldBe false
-        }
-      }
-    }
     "FilterTable" should {
       "remove specified table and related columns" in {
         val patch = FilterTable.only("users", "posts")
@@ -118,6 +95,27 @@ class PatchSpec extends FunctionalSpec {
         } { patched =>
           patched.tables.find(_.name.table == "users").value.columns.find(_.name == "id").value.tpe shouldEqual "UserId"
           patched.tables.find(_.name.table == "posts").value.columns.find(_.name == "user_id").value.tpe shouldEqual "UserId"
+        }
+      }
+      "remove default value from columns" in {
+        testPatch(PatchColumn.dropDefaultValue) { model =>
+          model.tables.exists { table =>
+            table.columns.exists { column =>
+              column.options.exists {
+                case _: RelationalProfile.ColumnOption.Default[_] => true
+                case _                                            => false
+              }
+            }
+          } shouldBe true
+        } { patched =>
+          patched.tables.exists { table =>
+            table.columns.exists { column =>
+              column.options.exists {
+                case _: RelationalProfile.ColumnOption.Default[_] => true
+                case _                                            => false
+              }
+            }
+          } shouldBe false
         }
       }
     }

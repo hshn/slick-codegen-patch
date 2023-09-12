@@ -64,45 +64,35 @@ object Patch {
     )
   }
 
-  case object DropDefaultValue extends PatchTable {
-    override def patch(table: Table): Table = table.copy(
-      columns = table.columns.map(dropDefaultValue),
-      indices = table.indices.map { index =>
-        index.copy(columns = index.columns.map(dropDefaultValue))
-      },
-      foreignKeys = table.foreignKeys.map { foreignKey =>
-        foreignKey.copy(
-          referencingColumns = foreignKey.referencingColumns.map(dropDefaultValue),
-          referencedColumns = foreignKey.referencedColumns.map(dropDefaultValue),
-        )
-      },
-    )
-    private def dropDefaultValue(column: Column): Column = column.copy(
-      options = column.options.filter {
-        case RelationalProfile.ColumnOption.Default(_) => false
-        case _                                         => true
-      },
-    )
-  }
-
   case class AndThen(a: Patch, b: Patch) extends Patch {
     override def apply(model: Model): Model = b.apply(a.apply(model))
   }
 
   case class PatchColumn(f: Column => Column) extends PatchTable {
     override def patch(table: Table): Table = table.copy(
-      columns = table.columns.map(refine),
-      primaryKey = table.primaryKey.map(refine),
-      foreignKeys = table.foreignKeys.map(refine),
-      indices = table.indices.map(refine),
+      columns = table.columns.map(patch),
+      primaryKey = table.primaryKey.map(patch),
+      foreignKeys = table.foreignKeys.map(patch),
+      indices = table.indices.map(patch),
     )
-    private def refine(column: Column): Column             = f(column)
-    private def refine(primaryKey: PrimaryKey): PrimaryKey = primaryKey.copy(columns = primaryKey.columns.map(refine))
-    private def refine(foreignKey: ForeignKey): ForeignKey = foreignKey.copy(
-      referencingColumns = foreignKey.referencingColumns.map(refine),
-      referencedColumns = foreignKey.referencedColumns.map(refine),
+    private def patch(column: Column): Column             = f(column)
+    private def patch(primaryKey: PrimaryKey): PrimaryKey = primaryKey.copy(columns = primaryKey.columns.map(patch))
+    private def patch(foreignKey: ForeignKey): ForeignKey = foreignKey.copy(
+      referencingColumns = foreignKey.referencingColumns.map(patch),
+      referencedColumns = foreignKey.referencedColumns.map(patch),
     )
-    private def refine(index: Index): Index = index.copy(columns = index.columns.map(refine))
+    private def patch(index: Index): Index = index.copy(columns = index.columns.map(patch))
+  }
+
+  object PatchColumn {
+    def dropDefaultValue: PatchColumn = PatchColumn { column =>
+      column.copy(
+        options = column.options.filter {
+          case RelationalProfile.ColumnOption.Default(_) => false
+          case _                                         => true
+        },
+      )
+    }
   }
 
   case class FilterTable(f: QualifiedName => Boolean) extends Patch {
