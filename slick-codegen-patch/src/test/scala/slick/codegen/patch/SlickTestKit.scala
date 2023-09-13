@@ -3,16 +3,16 @@ package slick.codegen.patch
 import cats.effect.IO
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
+import slick.basic.DatabaseConfig
 import slick.jdbc.JdbcProfile
 import slick.model.Model
 
 case class SlickTestKit[P <: JdbcProfile](
-  profile: P,
-  db: P#Backend#Database,
+  slick: DatabaseConfig[P],
 ) {
   def createModel(ignoreInvalidDefaults: Boolean = true): IO[Model] = {
     fromFuture { implicit ec =>
-      db.run(profile.createModel(None, ignoreInvalidDefaults = ignoreInvalidDefaults))
+      slick.db.run(slick.profile.createModel(None, ignoreInvalidDefaults = ignoreInvalidDefaults))
     }
   }
 
