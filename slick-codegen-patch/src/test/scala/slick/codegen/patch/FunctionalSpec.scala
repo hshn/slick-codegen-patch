@@ -11,7 +11,7 @@ trait FunctionalSpec extends UnitSpec {
     for {
       config <- createDatabaseConfig(path)
     } yield {
-      SlickTestKit(db = config.db, profile = config.profile)
+      SlickTestKit[JdbcProfile](config)
     }
   }
 
