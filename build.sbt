@@ -42,7 +42,7 @@ ThisBuild / githubWorkflowBuild ~= { steps =>
   WorkflowStep.Use(
     UseRef.Public("isbang", "compose-action", "v1.5.1"),
     Map(
-      "compose-file" -> "./docker-compose.yml",
+      "compose-file" -> "./compose.yml",
     ),
   ) +: steps
 }

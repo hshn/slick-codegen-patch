@@ -53,7 +53,7 @@ jobs:
 
       - uses: isbang/compose-action@v1.5.1
         with:
-          compose-file: ./docker-compose.yml
+          compose-file: ./compose.yml
 
       - name: Build project
         run: sbt '++ ${{ matrix.scala }}' test
