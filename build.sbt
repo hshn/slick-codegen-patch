@@ -36,13 +36,13 @@ lazy val settings = Seq(
 )
 
 // github workflows
-ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("17"))
+ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("17"), JavaSpec.temurin("21"))
 ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
 ThisBuild / githubWorkflowBuild ~= { steps =>
   WorkflowStep.Use(
     UseRef.Public("isbang", "compose-action", "v1.5.1"),
     Map(
-      "compose-file" -> "./docker-compose.yml",
+      "compose-file" -> "./compose.yml",
     ),
   ) +: steps
 }
