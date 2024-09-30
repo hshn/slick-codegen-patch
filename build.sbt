@@ -22,7 +22,7 @@ lazy val slickCodegenPatch = (project in file("slick-codegen-patch") withId "sli
   .settings(settings)
   .settings(
     libraryDependencies ++= Seq(
-      "com.typesafe.slick" %% "slick-codegen"                 % "3.5.1",
+      "com.typesafe.slick" %% "slick-codegen"                 % "3.5.2",
       "org.scalatest"      %% "scalatest"                     % "3.2.19" % Test,
       "org.typelevel"      %% "cats-effect"                   % "3.5.1"  % Test,
       "org.typelevel"      %% "cats-effect-testing-scalatest" % "1.5.0"  % Test,
