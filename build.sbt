@@ -1,7 +1,7 @@
 import org.typelevel.scalacoptions.ScalacOptions
 
 lazy val scala212 = "2.12.18"
-lazy val scala213 = "2.13.14"
+lazy val scala213 = "2.13.16"
 lazy val scala3   = "3.3.1"
 
 ThisBuild / organization       := "dev.hshn"
