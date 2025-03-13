@@ -14,9 +14,9 @@ services:
     - -user=root
     - -password=password
     - -connectRetries=60
-    - -cleanOnValidationError=true
     - migrate
     volumes:
     - ./slick-codegen-patch/src/test/resources/flyway/mysql-default:/flyway/sql
     depends_on:
     - mysql
+    restart: on-failure
