@@ -20,3 +20,4 @@ services:
     - ./slick-codegen-patch/src/test/resources/flyway/mysql-default:/flyway/sql
     depends_on:
     - mysql
+    restart: on-failure
