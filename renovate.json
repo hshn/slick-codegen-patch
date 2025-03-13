@@ -1,10 +1,25 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base"
+    "config:recommended"
   ],
   "ignorePaths": [
     ".github/workflows/ci.yml",
     ".github/workflows/clean.yml"
+  ],
+  "packageRules": [
+    {
+      "matchPackageNames": [
+        "sbt",
+        "sbt/sbt"
+      ],
+      "groupName": "sbt"
+    },
+    {
+      "matchUpdateTypes": [
+        "patch"
+      ],
+      "automerge": true
+    }
   ]
 }
