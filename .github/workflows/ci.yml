@@ -69,6 +69,7 @@ jobs:
             sleep 2
           done
 
+      
       - name: Build project
         run: sbt '++ ${{ matrix.scala }}' test
 
