@@ -58,6 +58,18 @@ jobs:
         with:
           compose-file: ./compose.yml
 
+      - name: Wait for MySQL to be ready
+        run: |
+          for i in {1..30}; do
+            if mysqladmin ping -h127.0.0.1 -P3307 -uroot -ppassword --silent; then
+              echo "MySQL is up!"
+              break
+            fi
+            echo "Waiting for MySQL..."
+            sleep 2
+          done
+
+      
       - name: Build project
         run: sbt '++ ${{ matrix.scala }}' test
 

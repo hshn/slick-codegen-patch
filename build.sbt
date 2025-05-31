@@ -39,12 +39,28 @@ lazy val settings = Seq(
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("17"), JavaSpec.temurin("21"))
 ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
 ThisBuild / githubWorkflowBuild ~= { steps =>
-  WorkflowStep.Use(
-    UseRef.Public("isbang", "compose-action", "v1.5.1"),
-    Map(
-      "compose-file" -> "./compose.yml",
+  Seq(
+    WorkflowStep.Use(
+      UseRef.Public("isbang", "compose-action", "v1.5.1"),
+      Map(
+        "compose-file" -> "./compose.yml",
+      ),
     ),
-  ) +: steps
+    WorkflowStep.Run(
+      name = Some("Wait for MySQL to be ready"),
+      commands = List(
+        """for i in {1..30}; do
+          |  if mysqladmin ping -h127.0.0.1 -P3307 -uroot -ppassword --silent; then
+          |    echo "MySQL is up!"
+          |    break
+          |  fi
+          |  echo "Waiting for MySQL..."
+          |  sleep 2
+          |done
+          |""".stripMargin,
+      ),
+    ),
+  ) ++ steps
 }
 ThisBuild / githubWorkflowPublishTargetBranches := Seq(RefPredicate.StartsWith(Ref.Tag("v")))
 ThisBuild / githubWorkflowPublish := Seq(
