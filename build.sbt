@@ -81,4 +81,3 @@ ThisBuild / githubWorkflowPublishTargetBranches := Seq(
 )
 
 // sonatype
-ThisBuild / sonatypeCredentialHost := xerial.sbt.Sonatype.sonatypeCentralHost
