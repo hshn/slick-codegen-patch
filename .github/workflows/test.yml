@@ -33,7 +33,7 @@ jobs:
           java-version: ${{ matrix.java }}
           cache: sbt
       - uses: sbt/setup-sbt@v1
-      - uses: isbang/compose-action@v1.5.1
+      - uses: isbang/compose-action@v3.0.0
         with:
           compose-file: ./compose.yml
       - name: Wait for MySQL to be ready
