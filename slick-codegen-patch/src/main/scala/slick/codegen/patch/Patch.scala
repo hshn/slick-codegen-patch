@@ -23,7 +23,7 @@ object Patch {
       tables = model.tables.map(patch),
     )
     def onTable(cond: Table => Boolean): Patch = PatchTable.Conditional(cond, this)
-    def onTables(names: String*): Patch = onTable {
+    def onTables(names: String*): Patch        = onTable {
       case TableRef(name) => names.contains(name)
       case _              => false
     }
@@ -48,7 +48,7 @@ object Patch {
 
     private def dropSchema(table: QualifiedName): QualifiedName = table.copy(schema = None)
     private def dropSchema(column: Column): Column              = column.copy(table = dropSchema(column.table))
-    private def dropSchema(primaryKey: PrimaryKey): PrimaryKey = primaryKey.copy(
+    private def dropSchema(primaryKey: PrimaryKey): PrimaryKey  = primaryKey.copy(
       table = dropSchema(primaryKey.table),
       columns = primaryKey.columns.map(dropSchema),
     )
