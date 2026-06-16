@@ -35,49 +35,4 @@ lazy val settings = Seq(
   Test / tpolecatExcludeOptions += ScalacOptions.warnNonUnitStatement,
 )
 
-// github workflows
-ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("17"), JavaSpec.temurin("21"))
-ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
-ThisBuild / githubWorkflowBuild ~= { steps =>
-  Seq(
-    WorkflowStep.Use(
-      UseRef.Public("isbang", "compose-action", "v1.5.1"),
-      Map(
-        "compose-file" -> "./compose.yml",
-      ),
-    ),
-    WorkflowStep.Run(
-      name = Some("Wait for MySQL to be ready"),
-      commands = List(
-        """for i in {1..30}; do
-          |  if mysqladmin ping -h127.0.0.1 -P3307 -uroot -ppassword --silent; then
-          |    echo "MySQL is up!"
-          |    break
-          |  fi
-          |  echo "Waiting for MySQL..."
-          |  sleep 2
-          |done
-          |""".stripMargin,
-      ),
-    ),
-  ) ++ steps
-}
-ThisBuild / githubWorkflowPublishTargetBranches := Seq(RefPredicate.StartsWith(Ref.Tag("v")))
-ThisBuild / githubWorkflowPublish := Seq(
-  WorkflowStep.Sbt(
-    commands = List("ci-release"),
-    name = Some("Publish project"),
-    env = Map(
-      "PGP_PASSPHRASE"    -> "${{ secrets.PGP_PASSPHRASE }}",
-      "PGP_SECRET"        -> "${{ secrets.PGP_SECRET }}",
-      "SONATYPE_USERNAME" -> "${{ secrets.SONATYPE_USERNAME }}",
-      "SONATYPE_PASSWORD" -> "${{ secrets.SONATYPE_PASSWORD }}",
-    ),
-  ),
-)
-ThisBuild / githubWorkflowPublishTargetBranches := Seq(
-  RefPredicate.StartsWith(Ref.Tag("v")),
-  RefPredicate.Equals(Ref.Branch("main")),
-)
-
 // sonatype
