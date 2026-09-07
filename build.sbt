@@ -24,7 +24,7 @@ lazy val slickCodegenPatch = (project in file("slick-codegen-patch") withId "sli
     libraryDependencies ++= Seq(
       "com.typesafe.slick" %% "slick-codegen"                 % "3.6.1",
       "org.scalatest"      %% "scalatest"                     % "3.2.20" % Test,
-      "org.typelevel"      %% "cats-effect"                   % "3.5.1"  % Test,
+      "org.typelevel"      %% "cats-effect"                   % "3.7.1"  % Test,
       "org.typelevel"      %% "cats-effect-testing-scalatest" % "1.8.0"  % Test,
       "com.mysql"           % "mysql-connector-j"             % "9.7.0"  % Test,
     ),
